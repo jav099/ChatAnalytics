@@ -140,8 +140,51 @@ TEST(datermineDay) {
     
 }
 
-TEST(bigTest) {
+TEST(hasWord) {
+    string name1 = "Javier";
+    Person javier(name1);
+    string text = "U00000008audio";
+    ASSERT_TRUE(javier.hasWord(text, "audio"));
+    text = "U00000008image";
+    ASSERT_TRUE(javier.hasWord(text, "image"));
+    text = "U00000008GIF";
+    ASSERT_TRUE(javier.hasWord(text, "GIF"));
+    text = "U00000008video";
+    ASSERT_TRUE(javier.hasWord(text, "video"));
+}
+
+TEST(setStartDate1) {
+    string filename = "chatVerySmall.txt";
+    Data data(filename);
+    string word;
+    string name1 = "Javier";
+    string name2 = "Jogui";
+    Person jogui(name2);
+    Person javier(name1);
+    data.readMsg(&javier, &jogui);
     
+    cout << data.getStartOfChat();
+    
+    
+}
+
+
+TEST(setStartDate2) {
+    string filename = "verySmall.txt";
+    Data data(filename);
+    string word;
+    string name1 = "Javier";
+    string name2 = "Kumresh Sharma (eecs)";
+    Person jogui(name2);
+    Person javier(name1);
+    data.readMsg(&javier, &jogui);
+    
+    cout << data.getStartOfChat();
+    
+}
+
+TEST(bigTest) {
+
     string filename = "theChatFinal.txt";
     Data data(filename);
     string word;
@@ -150,12 +193,12 @@ TEST(bigTest) {
     Person mech(name2);
     Person javier(name1);
     data.readMsg(&javier, &mech);
-    
+
     cout << "Javier Words " << javier.getTotalWords() << endl;
     cout << "Javier Messages " <<javier.messages.size() << endl;
     cout << "Mech Words " <<mech.getTotalWords() << endl;
     cout << "Mech Messages " <<mech.messages.size() << endl;
-    
+
     //    for (int i = 0; i < (int)javier.messages.size(); i++) {
     //        for (int j = 0; j < (javier.messages[i])->msgTxt.size(); j++) {
     //            cout << javier.messages[i]->msgTxt[j] << endl;
@@ -163,23 +206,25 @@ TEST(bigTest) {
     //    }
     cout << "Javier YearCount: " << endl;
     cout << javier.yearCount << endl;
-    
+
     cout << "Mech YearCount: " << endl;
     cout << mech.yearCount << endl;
-    
+
 //    cout << "Javier wordCount: " << endl;
 //    cout << javier.wordCount << endl;
 //
 //    cout << "Jogui wordCount: " << endl;
 //    cout << jogui.wordCount << endl;
-    
+
     cout << "Javier dayCount" << endl;
     cout << javier.dayCount << endl;
-    
+
     cout << "Mech dayCount" << endl;
     cout << mech.dayCount << endl;
-    
+
 }
+
+
 
 //TEST(emoji) {
 //    cout << "\U0001F917\U0001F917\U0001F917";

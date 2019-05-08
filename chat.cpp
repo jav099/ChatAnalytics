@@ -20,7 +20,8 @@
 
 
 
-Data::Data(string& filename) : totalWords(0) {
+Data::Data(string& filename) : totalWords(0), imageCount(0), gifCount(0)
+, audioCount(0), videoCount(0), startOfChat(""){
     chatFile.open(filename);
     if (!chatFile.is_open()) {
         cout << "error opening file";
@@ -45,6 +46,7 @@ void Data::readMsg(Person* person1, Person* person2) {
             messageSetter(chatFile, word, msg);
             msgCount++;
             msgVect.push_back(msg);
+            setStartOfChatDate(msg);
             if (msg->sender == person1Name) {
                 person1->messages.push_back(msg);
                 person1->mapSetter(msg);
@@ -117,15 +119,18 @@ void Person::countingFunc(Message* msg, int& position) {
     }
     totalWords++;
     
-    //setting word count, in this case the loop is unnecessary, later chang
-    // to just at position.
-        if (wordCount.count(msg->msgTxt[position]) == 0) {
-            wordCount[msg->msgTxt[position]] = 1;
-        } else {
-            ///this might be wrong way to access it, don't know
-            wordCount[msg->msgTxt[position]] += 1;
-        }
-
+    if (msg->msgTxt[position] == "omitted") {
+        attachmentCounter(msg, position);
+    }
+    
+    //if the word is not in the map
+    if (wordCount.count(msg->msgTxt[position]) == 0) {
+        wordCount[msg->msgTxt[position]] = 1;
+    } else {
+        //add one to the word count
+        wordCount[msg->msgTxt[position]] += 1;
+    }
+    
 }
 
 void Person::mapSetter(Message* msg) {
@@ -188,30 +193,31 @@ void Person::mapSetter(Message* msg) {
 }
 
 //counts the amount of gifs, images and audio per message.
-//increments the count for the respective person (sender) and for Data.
-//this will have to be used at the end, iterating through the whole vector of
+//increments the count for the respective person (sender)
 //messages and then through the whole vector of strings in a message.
 //need to use this to multiply total attachments times 2 and then subtract
 //from total words
-void Person::attachmentCounter(const Message* msg) {
-    int size = (int)msg->msgTxt.size();
-    for (int i = 0; i < size; i++) {
-        if (i != 0) {
-            if (msg->msgTxt[i] == "omitted" && msg->msgTxt[i-1] == "image") {
-                imageCount++;
-            }
-            if (msg->msgTxt[i] == "omitted" && msg->msgTxt[i-1] == "audio") {
-                audioCount++;
-            }
-            if (msg->msgTxt[i] == "omitted" && msg->msgTxt[i+1] == "GIF") {
-                gifCount++;
-            }
+void Person::attachmentCounter(const Message* msg, const int& position) {
+    if (msg->msgTxt.size() != 0 && msg->msgTxt.size() != 1 && position > 0) {
+        int prevPos = position - 1;
+        if (hasWord(msg->msgTxt[prevPos], "image")) {
+            imageCount++;
+        }
+        if (hasWord(msg->msgTxt[prevPos], "GIF")) {
+            gifCount++;
+        }
+        if (hasWord(msg->msgTxt[prevPos], "audio")) {
+            audioCount++;
+        }
+        if (hasWord(msg->msgTxt[prevPos], "video")) {
+            videoCount++;
         }
     }
+    
 }
 
 Person::Person(string name_in) : totalWords(0), name(name_in), imageCount(0),
-gifCount(0), audioCount(0) { }
+gifCount(0), audioCount(0), videoCount(0) { }
 
 Data::~Data() {
     int size = (int)msgVect.size();
@@ -324,4 +330,34 @@ string Data::dateNormalizer(const string& str) const {
         return normalizedDate;
     }
     return str;
+}
+
+
+void Data::setStartOfChatDate(const Message* msg) {
+    assert(msgVect.size() != 0);
+    if (msgVect.size() == 1) {
+        string date = msg->month + "/" + msg->day + "/" + msg->year + ";";
+        startOfChat = date;
+    } else {
+        return;
+    }
+}
+
+bool Person::hasWord(const string& text, const string& word) const {
+    int counter = 0;
+    bool flag = false;
+    for (int i = 0; i < text.size(); i++) {
+        if (counter < word.size()) {
+            if (text[i] == word[counter]) {
+                flag = true;
+                counter++;
+            }
+        }
+    }
+    return flag;
+}
+
+
+string Data::getStartOfChat() const {
+    return startOfChat;
 }

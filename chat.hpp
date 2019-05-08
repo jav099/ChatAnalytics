@@ -54,7 +54,7 @@ public:
     
     //counts the amount of gifs, images and audio per message.
     //increments the count for the respective person (sender) and for Data.
-    void attachmentCounter(const Message* msg);
+    void attachmentCounter(const Message* msg, const int& position);
     
     //TODO: Add a way to count common phrases
     int getTotalWords();
@@ -81,6 +81,7 @@ public:
     string determineDayOfWeek(const string& month,
                               const  string& day, const string& year) const;
     
+    bool hasWord(const string& text, const string& word) const;
     
     ~Person();
     
@@ -90,10 +91,13 @@ private:
     int imageCount;
     int gifCount;
     int audioCount;
-    
+    int videoCount;
     //probably add count for months
     int startingYear = 0;
     int currentYear = 0;
+    int totalAtchments = 0;
+    
+    
     
 };
 
@@ -129,12 +133,24 @@ public:
     
     int getTotalWords();
     
+    string getStartOfChat() const;
+    
+    //TODO:
+    string getEndOfChat() const;
+    
+    //TODO: maybe try to compute average response time
+    
 private:
     int totalWords;
     int imageCount;
     int gifCount;
     int audioCount;
+    int videoCount;
+    //date in format "M/D/Y;"
+    string startOfChat;
     vector<Message*> msgVect;
+    void setStartOfChatDate(const Message* msg);
+    
 };
 
 ostream& operator <<(ostream& os, const map<int,int>& mp) {
