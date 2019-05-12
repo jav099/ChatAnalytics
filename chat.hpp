@@ -29,6 +29,8 @@ struct Message {
     string year = "";
     string time = "";
     string sender = "";
+    //date in format M/D/YY
+    string date = "";
     vector<string> msgTxt;
     
 };
@@ -43,7 +45,7 @@ public:
     //add another map with a format similar to the map below
     //TODO: add here.
     //map with key year, and value monthCount ptr
-    map<int,map<string,int>*> yearMonthCount;
+    map<int,map<string,int>> yearMonthCount;
     
     map<int,int> yearCount;
     
@@ -69,6 +71,9 @@ public:
     
     int getGifCount();
     
+    int getTotalAttchments() const;
+    
+    
     void mapSetter(Message* msg);
     
     vector<Message*> messages;
@@ -78,10 +83,33 @@ public:
     
     friend ostream& operator <<(ostream& os, const map<string,int>& mp);
     
+    friend ostream& operator <<(ostream& os, const map<int,map<string,int>*>& mp);
+    
     string determineDayOfWeek(const string& month,
                               const  string& day, const string& year) const;
     
     bool hasWord(const string& text, const string& word) const;
+    
+    //TODO:
+    //this func should take in as a parameter an array of exceptions
+    std::pair<string, int> getWordWIthHighestCount(vector<string>& exc) const;
+    
+    std::pair<string, int> getWordWIthHighestCount() const;
+    
+    //returns the count of a certain word
+    //if the word is not found it will return 0
+    int getCountOfWord(const string& word) const;
+    
+    void computeTotalWords();
+    
+    int getMsgCount() const;
+    
+    //returns the position of the first msg in messages with date of date
+    //if no message was found will return -1
+    //if the specified date is simply the first message of a certain year
+    //then date.second will be set to false, and date.first will be set
+    //to the year (two digit year)
+    int firstMsgAtDate(const std::pair<string, bool>& date) const;
     
     ~Person();
     
@@ -107,38 +135,73 @@ class Data {
 public:
     friend class Person;
     //sets the ifstream
+    Data(string& filename, Person* person1, Person* person2);
+    
     Data(string& filename);
     
     ifstream chatFile;
     
-    map<string,int> wordCount;
-    map<int,int> monthCount;
-    map<int,int> yearCount;
+    map<string,int> uniqueDayWithMessageCount;
     
     //Counts the frequency of each word by calling both person's
     // respective functions which do all the adding of pairs into the
     // maps
-    void readMsg(Person* person1, Person* person2);
+    void readMsg();
     
    //sets all the date variables for msg
+    //normalizes the month of a message;
+    
     void messageSetter(ifstream& chatFile, string& date, Message* msg);
     
-//    Message* readRestOfMsg(ifstream& chatFile);
-    
+    //normalizes str(month) in case it has leftover strings before
+    //it is called in message setter
     string dateNormalizer(const string& str) const;
     
-    ~Data();
+ 
     
     bool inString(const string& str, const char& c) const;
     
-    int getTotalWords();
+    int getTotalWords() const;
     
+    int getImageCount() const;
+    
+    int getGifCount() const;
+    
+    int getTotalMessages() const;
+    
+    int getAudioCount() const;
+    
+    int getVideoCount() const;
+    
+    int countOfWord(const string& word) const;
+    
+    
+    //returns the start date in M/D/Y
     string getStartOfChat() const;
+    
+    //returns how many unique days have at least one message sent
+    int getUniqueDaysWithMessage() const;
+    
+    //returns the pair of the date with the most messages
+    std::pair<string, int> getDateWithMostMessages() const;
+    
+    Person* person1;
+    
+    Person* person2;
+    
+    //returns the position of the first msg in messages with date of date
+    //if no message was found will return -1
+    //if the specified date is simply the first message of a certain year
+    //then date.second will be set to false, and date.first will be set
+    //to the year (two digit year)
+    int firstMsgAtDate(const std::pair<string, bool>& date) const;
     
     //TODO:
     string getEndOfChat() const;
     
     //TODO: maybe try to compute average response time
+    
+    ~Data();
     
 private:
     int totalWords;
@@ -166,6 +229,18 @@ ostream& operator <<(ostream& os, const map<string,int>& mp) {
         os << kv.first << " : " << kv.second;
         os << endl;
     }
+    return os;
+}
+ostream& operator <<(ostream& os, const map<int,map<string,int>>& mp) {
+    for (auto& kv : mp) {
+        os << kv.first << endl;
+        map<string,int> internalMap = kv.second;
+        for (auto kv2 : internalMap) {
+            os << " " << kv2.first << " : " << kv2.second;
+            os << endl;
+        }
+    }
+    
     return os;
 }
 #endif /* chat_hpp */

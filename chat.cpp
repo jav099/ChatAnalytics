@@ -20,6 +20,17 @@
 
 
 
+Data::Data(string& filename, Person* p1, Person* p2) : totalWords(0), imageCount(0), gifCount(0)
+, audioCount(0), videoCount(0), startOfChat(""){
+    chatFile.open(filename);
+    if (!chatFile.is_open()) {
+        cout << "error opening file";
+        assert(false);
+    }
+    person1 = p1;
+    person2 = p2;
+}
+
 Data::Data(string& filename) : totalWords(0), imageCount(0), gifCount(0)
 , audioCount(0), videoCount(0), startOfChat(""){
     chatFile.open(filename);
@@ -31,7 +42,7 @@ Data::Data(string& filename) : totalWords(0), imageCount(0), gifCount(0)
 //Counts the frequency of each word by calling Javier's and Mech's
 // respective functions which do all the adding of pairs into the
 // maps
-void Data::readMsg(Person* person1, Person* person2) {
+void Data::readMsg() {
     string person1Name = person1->name;
     string person2Name = person2->name;
     string word;
@@ -71,6 +82,13 @@ void Data::readMsg(Person* person1, Person* person2) {
             ///////
         }
     }
+    person1->computeTotalWords();
+    person2->computeTotalWords();
+    totalWords = person1->getTotalWords() + person2->getTotalWords();
+    imageCount = person1->getImagesCount() + person2->getImagesCount();
+    gifCount = person1->gifCount + person2->gifCount;
+    audioCount = person1->audioCount + person2->audioCount;
+    videoCount = person1->videoCount + person2->videoCount;
     
 }
 
@@ -96,13 +114,18 @@ void Data::messageSetter(ifstream& chatFile, string& date, Message* msg) {
     }
     
     msg->month = dateNormalizer(msg->month);
-    
+    msg->date = msg->month + "/" + msg->day + "/" + msg->year;
     getline(chatFile, msg->time, ']');
     getline(chatFile, msg->sender, ':');
     string correctName = msg->sender;
     correctName.erase(std::remove_if(correctName.begin(),
                                      correctName.end(), ::isspace), correctName.end());
     msg->sender = correctName;
+    if (uniqueDayWithMessageCount.count(msg->date) == 0) {
+        uniqueDayWithMessageCount[msg->date] = 1;
+    } else {
+        uniqueDayWithMessageCount[msg->date] += 1;
+    }
 }
 
 //Handles all the map setting for the person, also sets the maps for Data
@@ -146,17 +169,10 @@ void Person::mapSetter(Message* msg) {
     }
     
     //setting monthCount
-    //if we're still in the same year
-    map<string, int> stdmap;
-    monthCountVect.push_back(stdmap);
-    std::pair<string, int> count;
-    count.first = msg->month;
-    count.second = 0;
-    if ((monthCountVect[currentYear-startingYear].insert(count)).second == true) {
-        monthCountVect[currentYear-startingYear][msg->month] = 1;
+    if (monthCount.count(msg->month) == 0) {
+        monthCount[msg->month] = 1;
     } else {
-        ///this might be wrong way to access it, don't know
-        monthCountVect[currentYear-startingYear][msg->month] += 1;
+        monthCount[msg->month] += 1;
     }
     
     
@@ -173,9 +189,21 @@ void Person::mapSetter(Message* msg) {
     }
     
     //setting yearMonthCount
-    if (yearMonthCount.count(currentYear) == 0) {
-        yearMonthCount[currentYear] = &monthCountVect[currentYear];
-    }
+    //if we're still in the same year
+//    map<string, int> stdmap;
+//    monthCountVect.push_back(stdmap);
+//    std::pair<string, int> count;
+//    count.first = msg->month;
+//    count.second = 0;
+//    
+//    if ((monthCountVect[currentYear-startingYear].count(msg->month) == 0)) {
+//        monthCountVect[currentYear-startingYear][msg->month] = 1;
+//    } else {
+//        monthCountVect[currentYear-startingYear][msg->month] += 1;
+//    }
+//    if (yearMonthCount.count(currentYear) == 0) {
+//        yearMonthCount[currentYear] = monthCountVect[currentYear-startingYear];
+//    }
     
     //setting year count
     if (currentYear == 0) {
@@ -202,15 +230,19 @@ void Person::attachmentCounter(const Message* msg, const int& position) {
         int prevPos = position - 1;
         if (hasWord(msg->msgTxt[prevPos], "image")) {
             imageCount++;
+            totalAtchments++;
         }
         if (hasWord(msg->msgTxt[prevPos], "GIF")) {
             gifCount++;
+            totalAtchments++;
         }
         if (hasWord(msg->msgTxt[prevPos], "audio")) {
             audioCount++;
+            totalAtchments++;
         }
         if (hasWord(msg->msgTxt[prevPos], "video")) {
             videoCount++;
+            totalAtchments++;
         }
     }
     
@@ -235,7 +267,7 @@ Person::~Person(){
     }
 }
 
-int Data::getTotalWords() {
+int Data::getTotalWords() const {
     return totalWords;
 }
 
@@ -257,6 +289,10 @@ int Person::getAudioCount() {
 
 int Person::getGifCount() {
     return gifCount;
+}
+
+int Person::getTotalAttchments() const {
+    return totalAtchments;
 }
 
 bool Data::inString(const string& str, const char& c) const {
@@ -351,6 +387,8 @@ bool Person::hasWord(const string& text, const string& word) const {
             if (text[i] == word[counter]) {
                 flag = true;
                 counter++;
+            } else {
+                flag = false;
             }
         }
     }
@@ -360,4 +398,135 @@ bool Person::hasWord(const string& text, const string& word) const {
 
 string Data::getStartOfChat() const {
     return startOfChat;
+}
+
+int Data::getUniqueDaysWithMessage() const {
+    return (int)uniqueDayWithMessageCount.size();
+}
+
+std::pair<string, int> Data::getDateWithMostMessages() const {
+    int currentMax = 0;
+    std::pair<string, int>  maxPair;
+    for (auto &kv : uniqueDayWithMessageCount) {
+        if (kv.second > currentMax) {
+            currentMax = kv.second;
+            maxPair.first = kv.first;
+            maxPair.second = currentMax;
+        }
+    }
+    return maxPair;
+}
+
+std::pair<string, int> Person::getWordWIthHighestCount(vector<string>& exc) const {
+    int currentMax = 0;
+    bool notFoundInVect = true;
+    std::pair<string, int>  maxPair;
+    for (auto &kv : wordCount) {
+        auto it = find(exc.begin(), exc.end(), kv.first);
+        if (it != exc.end()) {
+            notFoundInVect = false;
+        } else {
+            notFoundInVect = true;
+        }
+        if (kv.second > currentMax && notFoundInVect) {
+            currentMax = kv.second;
+            maxPair.first = kv.first;
+            maxPair.second = currentMax;
+        }
+    }
+    return maxPair;
+}
+
+std::pair<string, int> Person::getWordWIthHighestCount() const {
+    int currentMax = 0;
+    std::pair<string, int>  maxPair;
+    for (auto &kv : wordCount) {
+        if (kv.second > currentMax) {
+            currentMax = kv.second;
+            maxPair.first = kv.first;
+            maxPair.second = currentMax;
+        }
+    }
+    return maxPair;
+}
+
+
+void Person::computeTotalWords() {
+    totalWords -= (totalAtchments * 2);
+}
+
+int Person::getMsgCount() const {
+    return (int)messages.size();
+}
+
+int Data::getImageCount() const {
+    return imageCount;
+}
+
+int Data::getGifCount() const {
+    return gifCount;
+}
+
+int Data::getTotalMessages() const {
+    return (int)msgVect.size();
+}
+
+int Data::getAudioCount() const {
+    return audioCount;
+}
+
+int Data::getVideoCount() const {
+    return videoCount;
+}
+
+int Person::firstMsgAtDate(const std::pair<string,bool>& date) const {
+    for (int i = 0; i < (int)messages.size(); i++) {
+        if (date.second) {
+            if (messages[i]->date == date.first) {
+                return i;
+            }
+        } else {
+            if (messages[i]->year == date.first) {
+                return i;
+            }
+        }
+    }
+    return -1;
+}
+
+int Data::firstMsgAtDate(const std::pair<string,bool>& date) const {
+    for (int i = 0; i < (int)msgVect.size(); i++) {
+        if (date.second) {
+            if (msgVect[i]->date == date.first) {
+                return i;
+            }
+        } else {
+            if (msgVect[i]->year == date.first) {
+                return i;
+            }
+        }
+    }
+    return -1;
+}
+
+int Person::getCountOfWord(const string& word) const {
+    auto it = wordCount.find(word);
+    if (it != wordCount.end()) {
+        return it->second;
+    } else {
+        return 0;
+    }
+}
+
+int Data::countOfWord(const string& word) const {
+    int count = 0;
+    auto itP1 = person1->wordCount.find(word);
+    if (itP1 != person1->wordCount.end()) {
+        count += itP1->second;
+    }
+    auto itP2 = person2->wordCount.find(word);
+    if (itP2 != person2->wordCount.end()) {
+        count += itP2->second;
+    }
+    return count;
 }

@@ -38,36 +38,37 @@ TEST(PersonCtor) {
 
 TEST(readMsgsCompile) {
     string filename = "verySmall.txt";
-    Data data(filename);
-    string word;
     string name1 = "Javier";
     string name2 = "Kumresh Sharma (eecs)";
     Person jogui(name2);
     Person javier(name1);
-    data.readMsg(&javier, &jogui);
+    Data data(filename,&javier,&jogui);
+    string word;
+    
+    data.readMsg();
     
     cout << javier.getTotalWords() << endl;
     cout << javier.messages.size() << endl;
     cout << jogui.getTotalWords() << endl;
     cout << jogui.messages.size() << endl;
     
-    for (int i = 0; i < (int)javier.messages.size(); i++) {
-        for (int j = 0; j < (javier.messages[i])->msgTxt.size(); j++) {
-            cout << javier.messages[i]->msgTxt[j] << endl;
-        }
-    }
+//    for (int i = 0; i < (int)javier.messages.size(); i++) {
+//        for (int j = 0; j < (javier.messages[i])->msgTxt.size(); j++) {
+//            cout << javier.messages[i]->msgTxt[j] << endl;
+//        }
+//    }
     cout << "Javier YearCount: " << endl;
     cout << javier.yearCount << endl;
     
     cout << "Kumresh YearCount: " << endl;
     cout << jogui.yearCount << endl;
     
-    cout << "Javier wordCount: " << endl;
-    cout << javier.wordCount << endl;
-    
-    cout << "Kumresh wordCount: " << endl;
-    cout << jogui.wordCount << endl;
-    
+//    cout << "Javier wordCount: " << endl;
+//    cout << javier.wordCount << endl;
+//
+//    cout << "Kumresh wordCount: " << endl;
+//    cout << jogui.wordCount << endl;
+//
     cout << "Javier dayCount" << endl;
     cout << javier.dayCount << endl;
     
@@ -78,13 +79,14 @@ TEST(readMsgsCompile) {
 
 TEST(readMsgs2) {
     string filename = "chatVerySmall.txt";
-    Data data(filename);
-    string word;
     string name1 = "Javier";
     string name2 = "Jogui";
     Person jogui(name2);
     Person javier(name1);
-    data.readMsg(&javier, &jogui);
+    Data data(filename,&javier,&jogui);
+    string word;
+    
+    data.readMsg();
     
     cout << "Javier Words " << javier.getTotalWords() << endl;
     cout << "Javier Messages " <<javier.messages.size() << endl;
@@ -102,11 +104,11 @@ TEST(readMsgs2) {
     cout << "Jogui YearCount: " << endl;
     cout << jogui.yearCount << endl;
     
-    cout << "Javier wordCount: " << endl;
-    cout << javier.wordCount << endl;
-    
-    cout << "Jogui wordCount: " << endl;
-    cout << jogui.wordCount << endl;
+//    cout << "Javier wordCount: " << endl;
+//    cout << javier.wordCount << endl;
+//
+//    cout << "Jogui wordCount: " << endl;
+//    cout << jogui.wordCount << endl;
     
     cout << "Javier dayCount" << endl;
     cout << javier.dayCount << endl;
@@ -140,7 +142,7 @@ TEST(datermineDay) {
     
 }
 
-TEST(hasWord) {
+TEST(AAAhasWord) {
     string name1 = "Javier";
     Person javier(name1);
     string text = "U00000008audio";
@@ -151,70 +153,115 @@ TEST(hasWord) {
     ASSERT_TRUE(javier.hasWord(text, "GIF"));
     text = "U00000008video";
     ASSERT_TRUE(javier.hasWord(text, "video"));
+    text = "U00000008image";
+    ASSERT_TRUE(!javier.hasWord(text, "audio"));
 }
 
 TEST(setStartDate1) {
     string filename = "chatVerySmall.txt";
-    Data data(filename);
-    string word;
     string name1 = "Javier";
     string name2 = "Jogui";
     Person jogui(name2);
     Person javier(name1);
-    data.readMsg(&javier, &jogui);
+    Data data(filename, &javier, &jogui);
+    string word;
+   
+    data.readMsg();
     
     cout << data.getStartOfChat();
-    
     
 }
 
 
 TEST(setStartDate2) {
     string filename = "verySmall.txt";
-    Data data(filename);
-    string word;
     string name1 = "Javier";
     string name2 = "Kumresh Sharma (eecs)";
     Person jogui(name2);
     Person javier(name1);
-    data.readMsg(&javier, &jogui);
+    Data data(filename, &javier, &jogui);
+    string word;
+   
+    data.readMsg();
     
     cout << data.getStartOfChat();
     
 }
 
+TEST(monthMaps) {
+    string filename = "chatVerySmall.txt";
+    string name1 = "Javier";
+    string name2 = "Jogui";
+    Person jogui(name2);
+    Person javier(name1);
+    Data data(filename, &javier, &jogui);
+    
+    string word;
+    
+    data.readMsg();
+    
+    cout << "javier MonthCount: " << endl;
+    cout << javier.monthCount;
+    cout << endl;
+    cout << "jogui yearMonthCount: " << endl;
+    cout << jogui.monthCount;
+    cout << endl;
+    
+}
+
+//TEST(AAAnestedMaps) {
+//    string filename = "chatVerySmall.txt";
+//    Data data(filename);
+//    string word;
+//    string name1 = "Javier";
+//    string name2 = "Jogui";
+//    Person jogui(name2);
+//    Person javier(name1);
+//    data.readMsg(&javier, &jogui);
+//
+//    cout << "javier yearMonthCount: " << endl;
+//    cout << javier.yearMonthCount;
+//    cout << endl;
+//    cout << "jogui yearMonthCount: " << endl;
+//    cout << jogui.yearMonthCount;
+//    cout << endl;
+//
+//}
+//
+//
+//
+
+////////
+
 TEST(bigTest) {
 
     string filename = "theChatFinal.txt";
-    Data data(filename);
-    string word;
     string name1 = "Javier";
     string name2 = "Mech";
     Person mech(name2);
     Person javier(name1);
-    data.readMsg(&javier, &mech);
+    Data data(filename, &javier, &mech);
+    string word;
+    
+    data.readMsg();
+    
+//    for (auto kv : mech.wordCount) {
+//        if (kv.first == "love") {
+//            cout << kv.first << ":" << kv.second <<  endl;
+//        }
+//    }
 
     cout << "Javier Words " << javier.getTotalWords() << endl;
-    cout << "Javier Messages " <<javier.messages.size() << endl;
-    cout << "Mech Words " <<mech.getTotalWords() << endl;
-    cout << "Mech Messages " <<mech.messages.size() << endl;
+    cout << "Javier Messages " << javier.messages.size() << endl;
+    cout << "Mech Words " << mech.getTotalWords() << endl;
+    cout << "Mech Messages " << mech.messages.size() << endl;
 
-    //    for (int i = 0; i < (int)javier.messages.size(); i++) {
-    //        for (int j = 0; j < (javier.messages[i])->msgTxt.size(); j++) {
-    //            cout << javier.messages[i]->msgTxt[j] << endl;
-    //        }
-    //    }
     cout << "Javier YearCount: " << endl;
     cout << javier.yearCount << endl;
 
     cout << "Mech YearCount: " << endl;
     cout << mech.yearCount << endl;
 
-//    cout << "Javier wordCount: " << endl;
-//    cout << javier.wordCount << endl;
-//
-//    cout << "Jogui wordCount: " << endl;
-//    cout << jogui.wordCount << endl;
 
     cout << "Javier dayCount" << endl;
     cout << javier.dayCount << endl;
@@ -222,7 +269,97 @@ TEST(bigTest) {
     cout << "Mech dayCount" << endl;
     cout << mech.dayCount << endl;
 
+    cout << "javier MonthCount: " << endl;
+    cout << javier.monthCount;
+    cout << endl;
+    cout << "mech MonthCount: " << endl;
+    cout << mech.monthCount;
+    cout << endl;
+
+    cout << "javier getAttcCount: " << endl;
+    cout << javier.getTotalAttchments();
+    cout << endl;
+    cout << "mech attchCount: " << endl;
+    cout << mech.getTotalAttchments();
+    cout << endl;
+    cout << "javier images: " << endl;
+    cout << javier.getImagesCount();
+    cout << endl;
+    cout << "mech imagesCount: " << endl;
+    cout << mech.getImagesCount();
+    cout << endl;
+    cout << "javier getGifCount: " << endl;
+    cout << javier.getGifCount();
+    cout << endl;
+    cout << "mech getGifCount: " << endl;
+    cout << mech.getGifCount();
+    cout << endl;
+    cout << "javier audioCount: " << endl;
+    cout << javier.getAudioCount();
+    cout << endl;
+    cout << "mech audioCount: " << endl;
+    cout << mech.getAudioCount();
+    cout << endl;
+
+    cout << "day with the most messages: " << endl;
+    std::pair<string, int> max = data.getDateWithMostMessages();
+    cout << max.first << " : " << max.second << endl;
+
+    cout << "days with messages: " << endl;
+    cout << data.getUniqueDaysWithMessage() << endl;
+
+    std::pair<string,int> max2 = mech.getWordWIthHighestCount();
+    cout << "Mech Most used words: " << max2.first << " : " << max2.second << endl;
+    max2 = javier.getWordWIthHighestCount();
+    cout << "javier Most used words: " << max2.first << " : " << max2.second << endl;
+//}
+//
+//TEST(AttchmentsAndDateWithMostMessages) {
+//    string filename = "chatVerySmall.txt";
+//    Data data(filename);
+//    string word;
+//    string name1 = "Javier";
+//    string name2 = "Jogui";
+//    Person jogui(name2);
+//    Person javier(name1);
+//    data.readMsg(&javier, &jogui);
+//
+//    cout << "javier getAttcCount: " << endl;
+//    cout << javier.getTotalAttchments();
+//    cout << endl;
+//    cout << "jogui attchCount: " << endl;
+//    cout << jogui.getTotalAttchments();
+//    cout << endl;
+//    cout << "javier images: " << endl;
+//    cout << javier.getImagesCount();
+//    cout << endl;
+//    cout << "jogui imagesCount: " << endl;
+//    cout << jogui.getImagesCount();
+//    cout << endl;
+//    cout << "javier getGifCount: " << endl;
+//    cout << javier.getGifCount();
+//    cout << endl;
+//    cout << "jogui getGifCount: " << endl;
+//    cout << jogui.getGifCount();
+//    cout << endl;
+//    cout << "javier audioCount: " << endl;
+//    cout << javier.getAudioCount();
+//    cout << endl;
+//    cout << "jogui audioCount: " << endl;
+//    cout << jogui.getAudioCount();
+//    cout << endl;
+//
+//    cout << "day with the most messages: " << endl;
+//    std::pair<string, int> max = data.getDateWithMostMessages();
+//    cout << max.first << " : " << max.second << endl;
+//
+//    cout << "days with messages: " << endl;
+//    cout << data.getUniqueDaysWithMessage() << endl;
+    
+    
 }
+
+//TODO: test firstMsgAtDate, getWordWithHighestCount and getCountOfWord
 
 
 
