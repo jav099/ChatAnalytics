@@ -20,7 +20,18 @@
 
 
 
-Data::Data(string& filename, Person* p1, Person* p2) : totalWords(0), imageCount(0), gifCount(0)
+Data::Data(string& filename, string& p1, string& p2) : totalWords(0), imageCount(0), gifCount(0)
+, audioCount(0), videoCount(0), startOfChat(""){
+    chatFile.open(filename);
+    if (!chatFile.is_open()) {
+        cout << "error opening file";
+        assert(false);
+    }
+    person1 = new Person(p1);
+    person2 = new Person(p2);
+}
+
+Data::Data(string& filename, Person* p1, Person* p2, bool test) : totalWords(0), imageCount(0), gifCount(0)
 , audioCount(0), videoCount(0), startOfChat(""){
     chatFile.open(filename);
     if (!chatFile.is_open()) {
@@ -29,15 +40,17 @@ Data::Data(string& filename, Person* p1, Person* p2) : totalWords(0), imageCount
     }
     person1 = p1;
     person2 = p2;
+    forTests = test;
 }
 
-Data::Data(string& filename) : totalWords(0), imageCount(0), gifCount(0)
+Data::Data(string& filename, bool test) : totalWords(0), imageCount(0), gifCount(0)
 , audioCount(0), videoCount(0), startOfChat(""){
     chatFile.open(filename);
     if (!chatFile.is_open()) {
         cout << "error opening file";
         assert(false);
     }
+    forTests = test;
 }
 //Counts the frequency of each word by calling Javier's and Mech's
 // respective functions which do all the adding of pairs into the
@@ -257,7 +270,10 @@ Data::~Data() {
         delete msgVect[i];
         msgVect[i] = nullptr;
     }
-    
+    if (!forTests) {
+        delete person1;
+        delete person2;
+    }
 }
 
 Person::~Person(){
@@ -529,4 +545,10 @@ int Data::countOfWord(const string& word) const {
         count += itP2->second;
     }
     return count;
+}
+
+
+string Data::getEndOfChat() const {
+    string date = msgVect[(int)msgVect.size() - 1]->date;
+    return date;
 }

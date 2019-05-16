@@ -10,7 +10,7 @@ using namespace std;
 
 TEST(DataConstructor) {
     string filename = "chatSmall.txt";
-    Data data(filename);
+    Data data(filename,true);
     string word;
     ASSERT_TRUE(data.getTotalWords() == 0);
     data.chatFile >> word;
@@ -19,7 +19,7 @@ TEST(DataConstructor) {
 
 TEST(PersonCtor) {
     string filename = "chatSmall.txt";
-    Data data(filename);
+    Data data(filename,true);
     string word;
     string name1 = "Javier";
     string name2 = "Luis";
@@ -42,7 +42,7 @@ TEST(readMsgsCompile) {
     string name2 = "Kumresh Sharma (eecs)";
     Person jogui(name2);
     Person javier(name1);
-    Data data(filename,&javier,&jogui);
+    Data data(filename,&javier,&jogui, true);
     string word;
     
     data.readMsg();
@@ -83,7 +83,7 @@ TEST(readMsgs2) {
     string name2 = "Jogui";
     Person jogui(name2);
     Person javier(name1);
-    Data data(filename,&javier,&jogui);
+    Data data(filename,&javier,&jogui, true);
     string word;
     
     data.readMsg();
@@ -120,7 +120,7 @@ TEST(readMsgs2) {
 
 TEST(inString) {
     string filename = "chatVerySmall.txt";
-    Data data(filename);
+    Data data(filename,true);
     const string str = "‎[3/23/19,";
     const char c = '[';
     ASSERT_TRUE(data.inString(str, c));
@@ -128,7 +128,7 @@ TEST(inString) {
 
 TEST(datermineDay) {
     string filename = "chatVerySmall.txt";
-    Data data(filename);
+    Data data(filename, true);
     string name1 = "Javier";
     string name2 = "Jogui";
     Person jogui(name2);
@@ -163,7 +163,7 @@ TEST(setStartDate1) {
     string name2 = "Jogui";
     Person jogui(name2);
     Person javier(name1);
-    Data data(filename, &javier, &jogui);
+    Data data(filename, &javier, &jogui, true);
     string word;
    
     data.readMsg();
@@ -179,7 +179,7 @@ TEST(setStartDate2) {
     string name2 = "Kumresh Sharma (eecs)";
     Person jogui(name2);
     Person javier(name1);
-    Data data(filename, &javier, &jogui);
+    Data data(filename, &javier, &jogui, true);
     string word;
    
     data.readMsg();
@@ -194,7 +194,7 @@ TEST(monthMaps) {
     string name2 = "Jogui";
     Person jogui(name2);
     Person javier(name1);
-    Data data(filename, &javier, &jogui);
+    Data data(filename, &javier, &jogui, true);
     
     string word;
     
@@ -240,7 +240,7 @@ TEST(bigTest) {
     string name2 = "Mech";
     Person mech(name2);
     Person javier(name1);
-    Data data(filename, &javier, &mech);
+    Data data(filename, &javier, &mech, true);
     string word;
     
     data.readMsg();

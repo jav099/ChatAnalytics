@@ -135,9 +135,11 @@ class Data {
 public:
     friend class Person;
     //sets the ifstream
-    Data(string& filename, Person* person1, Person* person2);
+    Data(string& filename, string& p1, string& p2);
     
-    Data(string& filename);
+    Data(string& filename, bool test);
+    
+    Data(string& filename, Person* p1, Person* p2, bool test);
     
     ifstream chatFile;
     
@@ -213,6 +215,7 @@ private:
     string startOfChat;
     vector<Message*> msgVect;
     void setStartOfChatDate(const Message* msg);
+    bool forTests = false;
     
 };
 
