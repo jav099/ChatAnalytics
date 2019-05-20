@@ -388,7 +388,7 @@ string Data::dateNormalizer(const string& str) const {
 void Data::setStartOfChatDate(const Message* msg) {
     assert(msgVect.size() != 0);
     if (msgVect.size() == 1) {
-        string date = msg->month + "/" + msg->day + "/" + msg->year + ";";
+        string date = msg->month + "/" + msg->day + "/" + msg->year;
         startOfChat = date;
     } else {
         return;

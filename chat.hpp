@@ -20,6 +20,7 @@
 #include <cctype>
 #include <cmath>
 #include <ctime>
+#include "statistics.hpp"
 
 using namespace std;
 
@@ -134,6 +135,7 @@ private:
 class Data {
 public:
     friend class Person;
+    friend class Stats;
     //sets the ifstream
     Data(string& filename, string& p1, string& p2);
     
@@ -198,10 +200,10 @@ public:
     //to the year (two digit year)
     int firstMsgAtDate(const std::pair<string, bool>& date) const;
     
-    //TODO:
     string getEndOfChat() const;
     
-    //TODO: maybe try to compute average response time
+    vector<Message*> msgVect;
+    
     
     ~Data();
     
@@ -211,9 +213,9 @@ private:
     int gifCount;
     int audioCount;
     int videoCount;
-    //date in format "M/D/Y;"
+    //date in format "M/D/Y"
     string startOfChat;
-    vector<Message*> msgVect;
+   
     void setStartOfChatDate(const Message* msg);
     bool forTests = false;
     
