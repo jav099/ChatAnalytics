@@ -11,7 +11,7 @@
 
 using namespace std;
 
-Stats::Stats(Data* chat_in) : avgResponseTime(0.0), durationInDays(0) {
+Stats::Stats(Data* chat_in) : durationInDays(0) {
     chat = chat_in;
     compMap.insert({"A Game Of Thrones",292727});
     compMap.insert({"The Bible", 783137});
@@ -22,6 +22,10 @@ Stats::Stats(Data* chat_in) : avgResponseTime(0.0), durationInDays(0) {
     date1 = chat->startOfChat;
     date2 = chat->getEndOfChat();
     durationInDays = computeDaysInBetween(chat->msgVect[0], chat->msgVect[chat->getTotalMessages()-1]);
+    avgResponseTime.first = 0;
+    avgResponseTime.second = "hours";
+    newMsgEvery.first = 0;
+    newMsgEvery.second = "hours";
 }
 
 double Stats::computeDaysInBetween(Message* start, Message* end) {
@@ -158,20 +162,56 @@ double Stats::hoursBetweenMessages(Message* m1, Message* m2) const {
 
 void Stats::computeAvgResponseTime() {
     double avg = 0;
+    for (int i = 1; i < (int)chat->responseVect.size(); i++) {
+        avg += hoursBetweenMessages(chat->responseVect[i - 1], chat->responseVect[i]);
+    }
+    
+    avg /= chat->responseVect.size();
+    std::pair<double, string> average;
+    if (avg < 1) {
+        avg = hoursToMinutes(avg);
+        average.first = avg;
+        average.second = "minutes";
+        avgResponseTime = average;
+    } else {
+        average.first = avg;
+        average.second = "hours";
+        avgResponseTime = average;
+    }
+    
+}
+
+std::pair<double,string> Stats::getAvgResponseTime() const {
+    return avgResponseTime;
+}
+
+void Stats::newMessageSentEvery() {
+    double avg = 0;
     for (int i = 1; i < (int)chat->msgVect.size(); i++) {
         avg += hoursBetweenMessages(chat->msgVect[i - 1], chat->msgVect[i]);
     }
     
     avg /= chat->getTotalMessages();
-    avgResponseTime = avg;
-    
+    std::pair<double,string> average;
+    if (avg < 1) {
+        avg = hoursToMinutes(avg);
+        average.first = avg;
+        average.second = "minutes";
+        newMsgEvery = average;
+    } else {
+        average.first = avg;
+        average.second = "hours";
+        newMsgEvery = average;
+    };
 }
 
-double Stats::getAvgResponseTime() const {
-    return avgResponseTime;
+double Stats::hoursToMinutes(double& hours) const {
+    return hours * 60.0;
 }
 
-
+std::pair<double, string> Stats::getAvgNewMessage() const {
+    return newMsgEvery;
+}
 
 //double Stats::timeBetweenMessages(Message *m1, Message *m2) const {
 //    

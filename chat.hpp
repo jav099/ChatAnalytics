@@ -20,7 +20,7 @@
 #include <cctype>
 #include <cmath>
 #include <ctime>
-#include "statistics.hpp"
+
 
 using namespace std;
 
@@ -45,7 +45,7 @@ public:
     map<string,int> dayCount;
     //add another map with a format similar to the map below
     //TODO: add here.
-    //map with key year, and value monthCount ptr
+    //map with key year, and value monthCount
     map<int,map<string,int>> yearMonthCount;
     
     map<int,int> yearCount;
@@ -93,7 +93,7 @@ public:
     
     //TODO:
     //this func should take in as a parameter an array of exceptions
-    std::pair<string, int> getWordWIthHighestCount(vector<string>& exc) const;
+    std::pair<string, int> getWordWIthHighestCount(map<string,int>& exc) const;
     
     std::pair<string, int> getWordWIthHighestCount() const;
     
@@ -122,9 +122,9 @@ private:
     int audioCount;
     int videoCount;
     //probably add count for months
-    int startingYear = 0;
-    int currentYear = 0;
-    int totalAtchments = 0;
+    int startingYear;
+    int currentYear;
+    int totalAtchments;
     
     
     
@@ -150,7 +150,7 @@ public:
     //Counts the frequency of each word by calling both person's
     // respective functions which do all the adding of pairs into the
     // maps
-    void readMsg();
+    void dataGatherer();
     
    //sets all the date variables for msg
     //normalizes the month of a message;
@@ -204,6 +204,8 @@ public:
     
     vector<Message*> msgVect;
     
+    vector<Message*> responseVect;
+    
     
     ~Data();
     
@@ -217,13 +219,13 @@ private:
     string startOfChat;
    
     void setStartOfChatDate(const Message* msg);
-    bool forTests = false;
+    bool forTests;
     
 };
 
 ostream& operator <<(ostream& os, const map<int,int>& mp) {
     for (auto &kv : mp) {
-        os << kv.first << " : " << kv.second;
+        os << kv.first << "," << kv.second;
         os << endl;
     }
     return os;
@@ -231,7 +233,7 @@ ostream& operator <<(ostream& os, const map<int,int>& mp) {
 
 ostream& operator <<(ostream& os, const map<string,int>& mp) {
     for (auto &kv : mp) {
-        os << kv.first << " : " << kv.second;
+        os << kv.first << "," << kv.second;
         os << endl;
     }
     return os;
@@ -241,7 +243,7 @@ ostream& operator <<(ostream& os, const map<int,map<string,int>>& mp) {
         os << kv.first << endl;
         map<string,int> internalMap = kv.second;
         for (auto kv2 : internalMap) {
-            os << " " << kv2.first << " : " << kv2.second;
+            os << " " << kv2.first << "," << kv2.second;
             os << endl;
         }
     }

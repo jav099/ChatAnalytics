@@ -29,6 +29,7 @@ Data::Data(string& filename, string& p1, string& p2) : totalWords(0), imageCount
     }
     person1 = new Person(p1);
     person2 = new Person(p2);
+    forTests = false;
 }
 
 Data::Data(string& filename, Person* p1, Person* p2, bool test) : totalWords(0), imageCount(0), gifCount(0)
@@ -55,7 +56,7 @@ Data::Data(string& filename, bool test) : totalWords(0), imageCount(0), gifCount
 //Counts the frequency of each word by calling Javier's and Mech's
 // respective functions which do all the adding of pairs into the
 // maps
-void Data::readMsg() {
+void Data::dataGatherer() {
     string person1Name = person1->name;
     string person2Name = person2->name;
     string word;
@@ -70,6 +71,11 @@ void Data::readMsg() {
             messageSetter(chatFile, word, msg);
             msgCount++;
             msgVect.push_back(msg);
+            if (msgCount > 1) {
+                if (msgVect[msgCount - 2]->sender != msgVect[msgCount - 1]->sender) {
+                    responseVect.push_back(msg);
+                }
+            }
             setStartOfChatDate(msg);
             if (msg->sender == person1Name) {
                 person1->messages.push_back(msg);
@@ -262,7 +268,7 @@ void Person::attachmentCounter(const Message* msg, const int& position) {
 }
 
 Person::Person(string name_in) : totalWords(0), name(name_in), imageCount(0),
-gifCount(0), audioCount(0), videoCount(0) { }
+gifCount(0), audioCount(0), videoCount(0), startingYear(0), currentYear(0), totalAtchments(0) { }
 
 Data::~Data() {
     int size = (int)msgVect.size();
@@ -433,16 +439,15 @@ std::pair<string, int> Data::getDateWithMostMessages() const {
     return maxPair;
 }
 
-std::pair<string, int> Person::getWordWIthHighestCount(vector<string>& exc) const {
+std::pair<string, int> Person::getWordWIthHighestCount(map<string,int>& exc) const {
     int currentMax = 0;
     bool notFoundInVect = true;
     std::pair<string, int>  maxPair;
     for (auto &kv : wordCount) {
-        auto it = find(exc.begin(), exc.end(), kv.first);
-        if (it != exc.end()) {
-            notFoundInVect = false;
-        } else {
+        if (exc.count(kv.first) == 0) {
             notFoundInVect = true;
+        } else {
+            notFoundInVect = false;
         }
         if (kv.second > currentMax && notFoundInVect) {
             currentMax = kv.second;

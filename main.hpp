@@ -10,5 +10,8 @@
 #define main_hpp
 
 #include <stdio.h>
+#include <iostream>
+#include "chat.cpp"
+#include "statistics.cpp"
 
 #endif /* main_hpp */

@@ -1,6 +1,4 @@
 
-
-#include "chat.hpp"
 #include "chat.cpp"
 #include "unit_test_framework.h"
 #include <sstream>

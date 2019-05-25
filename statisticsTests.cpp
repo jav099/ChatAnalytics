@@ -13,6 +13,7 @@
 #include <sstream>
 #include "chat.hpp"
 #include "chat.cpp"
+
 using namespace std;
 
 TEST(ctor) {
@@ -56,9 +57,9 @@ TEST(getAvgResponseTime) {
     Data* dataPtr = &data;
     Stats stats(dataPtr);
     stats.computeAvgResponseTime();
-    double avg = stats.getAvgResponseTime();
+    std::pair<double, string> avg = stats.getAvgResponseTime();
     
-    cout << avg << endl;
+    cout << avg.first << " " << avg.second << endl;
     
 }
 
@@ -73,9 +74,12 @@ TEST(getAvgResponseTimeBig) {
     Data* dataPtr = &data;
     Stats stats(dataPtr);
     stats.computeAvgResponseTime();
-    double avg = stats.getAvgResponseTime();
+    std::pair<double, string> avg = stats.getAvgResponseTime();
+    std::pair<double, string> newMsgEvery = stats.newMessageSentEvery();
+
+    cout << avg.first << " " << avg.second << endl;
+    cout << "message was sent every " << newMsgEvery.first << " " << newMsgEvery.second << endl;
     
-    cout << avg << endl;
     
 }
 

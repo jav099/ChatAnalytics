@@ -21,26 +21,28 @@
 
 
 
-
 class Stats {
 public:
     
     Stats(Data* chat_in);
-    double getAvgResponseTime() const;
+    //pair will contain the time and the unit of time (hours or minutes)
+    std::pair<double,string> getAvgResponseTime() const;
+    std::pair<double,string> getAvgNewMessage() const;
     double getDurationInDays() const;
    // add version of this func since a particular date.
     void computeAvgResponseTime();
     double hoursBetweenMessages(Message* m1, Message* m2) const;
+    void newMessageSentEvery();
+    double hoursToMinutes(double& hours) const;
     
     //move this to private after testing
     Data* chat;
     
     std::map<string, int> compMap;
 private:
-    //TODO:
-    //find a way to compute the time between messages from the diff senders
-    double avgResponseTime;
     double durationInDays;
+    std::pair<double, string> avgResponseTime;
+    std::pair<double, string> newMsgEvery;
     double computeDaysInBetween(Message* start, Message* end);
     
     struct Date {
