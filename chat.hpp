@@ -112,6 +112,15 @@ public:
     //to the year (two digit year)
     int firstMsgAtDate(const std::pair<string, bool>& date) const;
     
+    //returns the top 15 words used by that person. If bool
+    //is set to true, it checks the exept map and excludes those
+    //otherwise just returns the top 15
+    vector<pair<string, int>>* top20Words(bool exeptions);
+    
+    map<string,int> exept;
+    
+    
+    
     ~Person();
     
 private:
@@ -121,10 +130,12 @@ private:
     int gifCount;
     int audioCount;
     int videoCount;
-    //probably add count for months
     int startingYear;
     int currentYear;
     int totalAtchments;
+    //this is to keep track of memory generated at top15
+    //and delete it at destruction time
+    vector<pair<string, int>>* retVect;
     
     
     

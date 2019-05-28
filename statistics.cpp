@@ -213,6 +213,29 @@ std::pair<double, string> Stats::getAvgNewMessage() const {
     return newMsgEvery;
 }
 
+pair<string, double> Stats::comparisons() const {
+    vector<pair<string, double>> cmp;
+    pair<string, double> p1;
+    double wordCount = (double)chat->getTotalWords();
+    for (auto kv : compMap) {
+        p1.first = kv.first;
+        p1.second = wordCount / kv.second;
+        cmp.push_back(p1);
+    }
+    double pctg = 0;
+    int index = 0;
+    int i = 0;
+    for (; i < cmp.size(); i++) {
+        if (cmp[i].second > pctg && cmp[i].second <= 3) {
+            pctg = cmp[i].second;
+            index = i;
+            p1.first = cmp[i].first;
+            p1.second = cmp[i].second;
+        }
+    }
+    return p1;
+}
+
 //double Stats::timeBetweenMessages(Message *m1, Message *m2) const {
 //    
 //    

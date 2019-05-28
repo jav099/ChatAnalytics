@@ -287,6 +287,7 @@ Person::~Person(){
     for (int i = 0; i < size; i++) {
         messages[i] = nullptr;
     }
+    delete retVect;
 }
 
 int Data::getTotalWords() const {
@@ -556,4 +557,45 @@ int Data::countOfWord(const string& word) const {
 string Data::getEndOfChat() const {
     string date = msgVect[(int)msgVect.size() - 1]->date;
     return date;
+}
+
+vector<pair<string, int>>* Person::top20Words(bool exeptions) {
+    vector<pair<string, int>>* vect = new vector<pair<string, int>>;
+    bool notFoundInVect = true;
+    if (exeptions) {
+        for (int i = 0; i < 20; i++) {
+            int max = 0;
+            pair<string, int> maxPair;
+            for (auto &it : wordCount) {
+                if (it.second > max) {
+                    if (exept.count(it.first) == 0) {
+                        notFoundInVect = true;
+                    } else {
+                        notFoundInVect = false;
+                    }
+                    if (notFoundInVect) {
+                        max = it.second;
+                        maxPair = it;
+                    }
+                }
+            }
+            wordCount.erase(maxPair.first);
+            (*vect).push_back(maxPair);
+        }
+    } else {
+        for (int i = 0; i < 20; i++) {
+            pair<string, int> maxPair;
+            int max = 0;
+            for (auto it : wordCount) {
+                 if (it.second > max) {
+                     max = it.second;
+                     maxPair = it;
+                 }
+            }
+            wordCount.erase(maxPair.first);
+            (*vect).push_back(maxPair);
+        }
+    }
+    retVect = vect;
+    return vect;
 }

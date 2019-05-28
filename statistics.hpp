@@ -35,6 +35,8 @@ public:
     void newMessageSentEvery();
     double hoursToMinutes(double& hours) const;
     
+    pair<string, double> comparisons() const;
+    
     //move this to private after testing
     Data* chat;
     
