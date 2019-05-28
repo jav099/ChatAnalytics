@@ -560,13 +560,14 @@ string Data::getEndOfChat() const {
 }
 
 vector<pair<string, int>>* Person::top20Words(bool exeptions) {
+    map<string,int> wordCountCopy = wordCount;
     vector<pair<string, int>>* vect = new vector<pair<string, int>>;
     bool notFoundInVect = true;
     if (exeptions) {
         for (int i = 0; i < 20; i++) {
             int max = 0;
             pair<string, int> maxPair;
-            for (auto &it : wordCount) {
+            for (auto &it : wordCountCopy) {
                 if (it.second > max) {
                     if (exept.count(it.first) == 0) {
                         notFoundInVect = true;
@@ -579,10 +580,11 @@ vector<pair<string, int>>* Person::top20Words(bool exeptions) {
                     }
                 }
             }
-            wordCount.erase(maxPair.first);
+            wordCountCopy.erase(maxPair.first);
             (*vect).push_back(maxPair);
         }
     } else {
+        wordCount.erase("omitted");
         for (int i = 0; i < 20; i++) {
             pair<string, int> maxPair;
             int max = 0;

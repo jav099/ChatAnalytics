@@ -27,16 +27,17 @@ int main(int argc, char* argv[]) {
     //3. Name2;
     
     vector<string> exceptions =
-    {"de","la","que","el","en","y","a","los","se","del","las","un","por","con",
-    "una","su","para","es","al","lo","como","más","o","pero","sus","le","ha",
-    "Me","sin","sobre","este","ya","cuando","todo","ser","son","dos","fue",
-    "también","había","era","muy","hasta","desde","mi","porque","que","qué",
-    "solo","sólo","han","hay","vez","puede","todos","asi","así","nos","ni",
-    "parte","tiene","él","uno","donde","bien","te","the","be","to","of","and",
-    "a","in","that","have","I","this","but","his","by","from","they","say","so",
-    "if","eso","omitted","Pero","No","Si","Y","esta","O","eso","\U0000200eimage"
+    {"audio","de","la","que","el","en","y","a","los","se","del","las","un","por","con",
+        "una","su","para","es","al","lo","como","más","o","pero","sus","le","ha",
+        "Me","sin","sobre","este","ya","cuando","todo","ser","son","dos","fue",
+        "también","había","era","muy","hasta","desde","mi","porque","que","qué",
+        "solo","sólo","han","hay","vez","puede","todos","asi","así","nos","ni",
+        "parte","tiene","él","uno","donde","bien","te","the","be","to","of","and",
+        "a","in","that","have","I","this","but","his","by","from","they","say","so",
+        "if","eso","omitted","Pero","No","Si","Y","esta","O","eso","\U0000200eimage"
         ,"it","is","sea","Que","for","Es","A","GIF","audio","Ya","está","Como",
-        "gif","La","my","Yo","on"
+        "gif","La","my","Yo","on","Audio","\U0000200eaudio","\U0000200eGIF","Mas",
+        "Esta","El","ver","ma"
     };
     ofstream out("csvData.txt");
     string filename = "theChatFinal.txt";
@@ -59,75 +60,114 @@ int main(int argc, char* argv[]) {
     data.person2->wordCount.erase("GIF");
     std::pair<double, string> avg = stats.getAvgResponseTime();
     std::pair<double, string> newMsgEvery = stats.getAvgNewMessage();
-    cout << "Chat duration: " << endl;
-    cout << stats.getDurationInDays() << " days" << endl;
-    cout << "Messages sent:  " << endl;
-    cout << data.getTotalMessages() << endl;
-    cout << "The average response time was of: " << endl;
-    cout << avg.first << " " << avg.second << endl;
-    cout << "On average, a new message was sent every " << endl;
-    cout << newMsgEvery.first << " " << newMsgEvery.second << endl;
-    cout << name1 << " sent a total of: " << endl;
-    cout << data.person1->getTotalWords() << " words" << endl;
-    cout << name2 << " sent a total of: " << endl;
-    cout << data.person2->getTotalWords() << " words" << endl;
-    cout << name1 << " sent a total of: " << endl;
-    cout << data.person1->getAudioCount() << " voice messages" << endl;
-    cout << name2 << " sent a total of: " << endl;
-    cout << data.person2->getAudioCount()<< " voice messages" << endl;
-    cout << name1 << " sent a total of: " << endl;
-    cout << data.person1->getTotalAttchments() << " attachments" << endl;
-    cout << name2 << " sent a total of: " << endl;
-    cout << data.person2->getTotalAttchments() << " attachments" << endl;
-    
-    cout << "Days with at least one message:" << endl;
-    cout << data.getUniqueDaysWithMessage() << endl;
-    for (int i = 0; i < exceptions.size(); i++) {
-        const string word = exceptions[i];
-        data.person1->exept[word];
-        data.person2->exept[word];
-    }
     
     vector<pair<string, int>>* vectPtr1Ex = data.person1->top20Words(true);
     vector<pair<string, int>>* vectPtr2Ex = data.person2->top20Words(true);
-
+    vector<pair<string, int>>* vectPtr1NoEx = data.person1->top20Words(false);
+    vector<pair<string, int>>* vectPtr2NoEx = data.person2->top20Words(false);
+    
     
     out << name1 << ":" << endl;
     out << "month,messages" << endl;
     out << data.person1->monthCount << endl;
     
+    out << "%%%%" << endl;
+    
     out << name2 << ":" << endl;
     out << "month,messages" << endl;
     out << data.person2->monthCount << endl;
+    
+    out << "%%%%" << endl;
     
     out << name1 << ":" << endl;
     out << "day,messages" << endl;
     out << data.person1->dayCount << endl;
     
+    out << "%%%%" << endl;
+    
     out << name2 << ":" << endl;
     out << "day,messages" << endl;
     out << data.person2->dayCount << endl;
+    
+    out << "%%%%" << endl;
     
     out << name1 << ":" << endl;
     out << "year,messages" << endl;
     out << data.person1->yearCount << endl;
     
+    out << "%%%%" << endl;
+    
     out << name2 << ":" << endl;
     out << "year,messages" << endl;
     out << data.person2->yearCount << endl;
+    
+    out << "%%%%" << endl;
     
     out << name1 << ":" << endl;
     out << "word,count" << endl;
     out << vectPtr1Ex << endl;
     
+    out << "%%%%" << endl;
+    
     out << name2 << ":" << endl;
     out << "word,count" << endl;
     out << vectPtr2Ex << endl;
     
+    out << "%%%%" << endl;
+    
+    out << name1 << ":" << endl;
+    out << "word,count" << endl;
+    out << vectPtr1NoEx << endl;
+    
+    out << "%%%%" << endl;
+    
+    out << name2 << ":" << endl;
+    out << "word,count" << endl;
+    out << vectPtr2NoEx << endl;
+    
+    out << "%%%%" << endl;
+    
+    out << "**********" << endl;
+    
+    out << "Chat duration: " << endl;
+    out << stats.getDurationInDays() << " days" << endl;
+    out << "Messages sent:  " << endl;
+    out << data.getTotalMessages() << endl;
+    out << "The average response time was of: " << endl;
+    out << avg.first << " " << avg.second << endl;
+    out << "On average, a new message was sent every " << endl;
+    out << newMsgEvery.first << " " << newMsgEvery.second << endl;
+    out << name1 << " sent a total of: " << endl;
+    out << data.person1->getTotalWords() << " words" << endl;
+    out << name2 << " sent a total of: " << endl;
+    out << data.person2->getTotalWords() << " words" << endl;
+    out << name1 << " sent a total of: " << endl;
+    out << data.person1->getAudioCount() << " voice messages" << endl;
+    out << name2 << " sent a total of: " << endl;
+    out << data.person2->getAudioCount()<< " voice messages" << endl;
+    out << name1 << " sent a total of: " << endl;
+    out << data.person1->getTotalAttchments() << " attachments" << endl;
+    out << name2 << " sent a total of: " << endl;
+    out << data.person2->getTotalAttchments() << " attachments" << endl;
+    
+    out << "Days with at least one message:" << endl;
+    out << data.getUniqueDaysWithMessage() << endl;
+    for (int i = 0; i < exceptions.size(); i++) {
+        string word = exceptions[i];
+        data.person1->exept[word];
+        data.person2->exept[word];
+    }
     
     
-    cout << "Comparison for your chat (word count)" << endl;
-    cout << stats.comparisons().second << " of " << stats.comparisons().first << endl;
+    
+    out << "Comparison for your chat (word count)" << endl;
+    out << stats.comparisons().second << " of " << stats.comparisons().first << endl;
+    
+    
+    
+    
+    
+    
     
     
     
