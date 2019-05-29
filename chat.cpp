@@ -188,10 +188,10 @@ void Person::mapSetter(Message* msg) {
     }
     
     //setting monthCount
-    if (monthCount.count(msg->month) == 0) {
-        monthCount[msg->month] = 1;
+    if (monthCount.count(stoi(msg->month)) == 0) {
+        monthCount[stoi(msg->month)] = 1;
     } else {
-        monthCount[msg->month] += 1;
+        monthCount[stoi(msg->month)] += 1;
     }
     
     

@@ -41,7 +41,7 @@ public:
     friend class Data;
     Person(string name_in);
     map<string,int> wordCount;
-    map<string,int> monthCount;
+    map<int,int> monthCount;
     map<string,int> dayCount;
     //add another map with a format similar to the map below
     //TODO: add here.
