@@ -37,12 +37,12 @@ int main(int argc, char* argv[]) {
         "if","eso","omitted","Pero","No","Si","Y","esta","O","eso","\U0000200eimage"
         ,"it","is","sea","Que","for","Es","A","GIF","audio","Ya","está","Como",
         "gif","La","my","Yo","on","Audio","\U0000200eaudio","\U0000200eGIF","Mas",
-        "Esta","El","ver","ma"
+        "Esta","El","ver","ma","me",
     };
     ofstream out("csvData.txt");
-    string filename = "theChatFinal.txt";
+    string filename = "gChatOld.txt";
     string name1 = "Javier";
-    string name2 = "Mech";
+    string name2 = "Geo";
     Data data(filename, name1, name2);
     string word;
     
@@ -55,11 +55,21 @@ int main(int argc, char* argv[]) {
     data.person1->wordCount.erase("audio");
     data.person1->wordCount.erase("image");
     data.person1->wordCount.erase("GIF");
+    data.person1->wordCount.erase("omitted");
+    data.person2->wordCount.erase("omitted");
     data.person2->wordCount.erase("audio");
     data.person2->wordCount.erase("image");
     data.person2->wordCount.erase("GIF");
+    data.person2->wordCount.erase("\U0000200eaudio");
+    data.person1->wordCount.erase("\U0000200eaudio");
     std::pair<double, string> avg = stats.getAvgResponseTime();
     std::pair<double, string> newMsgEvery = stats.getAvgNewMessage();
+    
+    for (int i = 0; i < exceptions.size(); i++) {
+        string word = exceptions[i];
+        data.person1->exept[word];
+        data.person2->exept[word];
+    }
     
     vector<pair<string, int>>* vectPtr1Ex = data.person1->top20Words(true);
     vector<pair<string, int>>* vectPtr2Ex = data.person2->top20Words(true);
@@ -69,61 +79,61 @@ int main(int argc, char* argv[]) {
     
     out << name1 << ":" << endl;
     out << "month,messages" << endl;
-    out << data.person1->monthCount << endl;
+    out << data.person1->monthCount;
     
     out << "%%%%" << endl;
     
     out << name2 << ":" << endl;
     out << "month,messages" << endl;
-    out << data.person2->monthCount << endl;
+    out << data.person2->monthCount;
     
     out << "%%%%" << endl;
     
     out << name1 << ":" << endl;
     out << "day,messages" << endl;
-    out << data.person1->dayCount << endl;
+    out << data.person1->dayCount;
     
     out << "%%%%" << endl;
     
     out << name2 << ":" << endl;
     out << "day,messages" << endl;
-    out << data.person2->dayCount << endl;
+    out << data.person2->dayCount;
     
     out << "%%%%" << endl;
     
     out << name1 << ":" << endl;
     out << "year,messages" << endl;
-    out << data.person1->yearCount << endl;
+    out << data.person1->yearCount;
     
     out << "%%%%" << endl;
     
     out << name2 << ":" << endl;
     out << "year,messages" << endl;
-    out << data.person2->yearCount << endl;
+    out << data.person2->yearCount;
     
     out << "%%%%" << endl;
     
     out << name1 << ":" << endl;
     out << "word,count" << endl;
-    out << vectPtr1Ex << endl;
+    out << vectPtr1Ex;
     
     out << "%%%%" << endl;
     
     out << name2 << ":" << endl;
     out << "word,count" << endl;
-    out << vectPtr2Ex << endl;
+    out << vectPtr2Ex;
     
     out << "%%%%" << endl;
     
     out << name1 << ":" << endl;
     out << "word,count" << endl;
-    out << vectPtr1NoEx << endl;
+    out << vectPtr1NoEx;
     
     out << "%%%%" << endl;
     
     out << name2 << ":" << endl;
     out << "word,count" << endl;
-    out << vectPtr2NoEx << endl;
+    out << vectPtr2NoEx;
     
     out << "%%%%" << endl;
     
@@ -133,6 +143,12 @@ int main(int argc, char* argv[]) {
     out << stats.getDurationInDays() << " days" << endl;
     out << "Messages sent:  " << endl;
     out << data.getTotalMessages() << endl;
+    std::vector<pair<string, double>> avgWords = data.getAvgWordsPerMessage();
+    for (int i = 0; i < 2; i++) {
+        out << avgWords[i].first << " average words per message:" << endl;
+        out << avgWords[i].second << endl;
+    }
+    
     out << "The average response time was of: " << endl;
     out << avg.first << " " << avg.second << endl;
     out << "On average, a new message was sent every " << endl;
@@ -152,11 +168,6 @@ int main(int argc, char* argv[]) {
     
     out << "Days with at least one message:" << endl;
     out << data.getUniqueDaysWithMessage() << endl;
-    for (int i = 0; i < exceptions.size(); i++) {
-        string word = exceptions[i];
-        data.person1->exept[word];
-        data.person2->exept[word];
-    }
     
     
     

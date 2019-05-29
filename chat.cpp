@@ -601,3 +601,16 @@ vector<pair<string, int>>* Person::top20Words(bool exeptions) {
     retVect = vect;
     return vect;
 }
+
+std::vector<std::pair<string, double>> Data::getAvgWordsPerMessage() const {
+    std::vector<std::pair<string,double>> vect;
+    double person1Avg = (double)person1->getTotalWords() / person1->messages.size();
+    string person1Name = person1->name;
+    std::pair<string,double> p1 = {person1Name,person1Avg};
+    vect.push_back(p1);
+    double person2Avg = (double)person2->getTotalWords() / person2->messages.size();
+    string person2Name = person2->name;
+    std::pair<string,double> p2 = {person2Name,person2Avg};
+    vect.push_back(p2);
+    return vect;
+}

@@ -37,6 +37,7 @@ public:
     
     pair<string, double> comparisons() const;
     
+    
     //move this to private after testing
     Data* chat;
     

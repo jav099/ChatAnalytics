@@ -43,6 +43,7 @@ public:
     map<string,int> wordCount;
     map<int,int> monthCount;
     map<string,int> dayCount;
+    
     //add another map with a format similar to the map below
     //TODO: add here.
     //map with key year, and value monthCount
@@ -59,7 +60,7 @@ public:
     //increments the count for the respective person (sender) and for Data.
     void attachmentCounter(const Message* msg, const int& position);
     
-    //TODO: Add a way to count common phrases
+    
     int getTotalWords();
     
     string getName();
@@ -118,6 +119,7 @@ public:
     vector<pair<string, int>>* top20Words(bool exeptions);
     
     map<string,int> exept;
+    
     
     
     
@@ -216,6 +218,10 @@ public:
     vector<Message*> msgVect;
     
     vector<Message*> responseVect;
+    
+    //Returns a vector of two pairs, each containing the
+    // name of the person and his/her avgwords per message
+    std::vector<std::pair<string, double>> getAvgWordsPerMessage() const;
     
     
     ~Data();
