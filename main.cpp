@@ -169,8 +169,6 @@ int main(int argc, char* argv[]) {
     out << "Days with at least one message:" << endl;
     out << data.getUniqueDaysWithMessage() << endl;
     
-    
-    
     out << "Comparison for your chat (word count)" << endl;
     out << stats.comparisons().second << " of " << stats.comparisons().first << endl;
     
