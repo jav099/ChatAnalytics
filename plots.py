@@ -237,3 +237,31 @@ plt.bar(x,y,color = "g")
 
 plt.savefig("wordFrequency (raw)" + correctName2)
 
+plt.clf()
+x.clear()
+y.clear()
+y2.clear()
+
+#end of seventh graph
+
+#trash = data.readline()
+#trash = data.readline()
+#duration = float(data.readline())
+#ylabel = "days"
+#title = "Chat duration"
+#y.append(duration)
+#x.append("duration")
+#plt.title(title)
+#plt.ylabel(ylabel)
+#plt.bar(x,y, width=0.000001)
+#plt.savefig("chatDuration")
+
+#plt.clf()
+#x.clear()
+#y.clear()
+
+#end of graph
+
+
+
+

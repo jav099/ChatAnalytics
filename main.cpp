@@ -19,12 +19,26 @@ ostream& operator<<(ostream& os, vector<pair<string, int>>* vectPtr) {
     return os;
 }
 
+//Requires command line arguments in form: filename name1 name2
+//Takes in command line arguments and places them into their respective variables for data constructor.
+void init(string& filename, string& name1, string& name2, char* argv[], int argc) {
+    filename = argv[1];
+    name1 = argv[2];
+    name2 = argv[3];
+}
+
+
+
 using namespace std;
 int main(int argc, char* argv[]) {
     //will receive as arguments:
     //1. filename
     //2. Name1;
     //3. Name2;
+    
+    string filename = "";
+    string name1 = "";
+    string name2 = "";
     
     vector<string> exceptions =
     {"audio","de","la","que","el","en","y","a","los","se","del","las","un","por","con",
@@ -40,9 +54,11 @@ int main(int argc, char* argv[]) {
         "Esta","El","ver","ma","me",
     };
     ofstream out("csvData.txt");
-    string filename = "gChatOld.txt";
-    string name1 = "Javier";
-    string name2 = "Geo";
+//    string filename = "gChatOld.txt";
+//    string name1 = "Javier";
+//    string name2 = "Geo";
+    init(filename,name1, name2, argv,argc);
+    
     Data data(filename, name1, name2);
     string word;
     
@@ -65,6 +81,7 @@ int main(int argc, char* argv[]) {
     std::pair<double, string> avg = stats.getAvgResponseTime();
     std::pair<double, string> newMsgEvery = stats.getAvgNewMessage();
     
+    //adding the exceptions vector to both persons
     for (int i = 0; i < exceptions.size(); i++) {
         string word = exceptions[i];
         data.person1->exept[word];
@@ -137,40 +154,52 @@ int main(int argc, char* argv[]) {
     
     out << "%%%%" << endl;
     
-    out << "**********" << endl;
     
-    out << "Chat duration: " << endl;
-    out << stats.getDurationInDays() << " days" << endl;
-    out << "Messages sent:  " << endl;
+    out << "duration (days)" << endl;
+    out << stats.getDurationInDays() << endl;
+    out << "%%%%" << endl;
+    out << "total messages" << endl;
     out << data.getTotalMessages() << endl;
+    out << "%%%%" << endl;
     std::vector<pair<string, double>> avgWords = data.getAvgWordsPerMessage();
     for (int i = 0; i < 2; i++) {
-        out << avgWords[i].first << " average words per message:" << endl;
+        out << avgWords[i].first << " average words per message" << endl;
         out << avgWords[i].second << endl;
+        out << "%%%%" << endl;
     }
     
-    out << "The average response time was of: " << endl;
+    out << "average response time" << endl;
     out << avg.first << " " << avg.second << endl;
-    out << "On average, a new message was sent every " << endl;
+    out << "%%%%" << endl;
+    out << "new message sent every" << endl;
     out << newMsgEvery.first << " " << newMsgEvery.second << endl;
-    out << name1 << " sent a total of: " << endl;
-    out << data.person1->getTotalWords() << " words" << endl;
-    out << name2 << " sent a total of: " << endl;
+    out << "%%%%" << endl;
+    out << name1 << " total words" << endl;
+    out << data.person1->getTotalWords() << endl;
+    out << "%%%%" << endl;
+    out << name2 << " total words" << endl;
     out << data.person2->getTotalWords() << " words" << endl;
-    out << name1 << " sent a total of: " << endl;
-    out << data.person1->getAudioCount() << " voice messages" << endl;
-    out << name2 << " sent a total of: " << endl;
-    out << data.person2->getAudioCount()<< " voice messages" << endl;
-    out << name1 << " sent a total of: " << endl;
-    out << data.person1->getTotalAttchments() << " attachments" << endl;
-    out << name2 << " sent a total of: " << endl;
-    out << data.person2->getTotalAttchments() << " attachments" << endl;
+    out << "%%%%" << endl;
+    out << name1 << " toral voice messages" << endl;
+    out << data.person1->getAudioCount()  << endl;
+    out << "%%%%" << endl;
+    out << name2 << " total voice messages" << endl;
+    out << data.person2->getAudioCount()<< endl;
+    out << "%%%%" << endl;
+    out << name1 << " total attachments" << endl;
+    out << data.person1->getTotalAttchments() << endl;
+    out << "%%%%" << endl;
+    out << name2 << " total attachments" << endl;
+    out << data.person2->getTotalAttchments() << endl;
+    out << "%%%%" << endl;
     
-    out << "Days with at least one message:" << endl;
+    out << "days with 1+ messages" << endl;
     out << data.getUniqueDaysWithMessage() << endl;
+    out << "%%%%" << endl;
     
     out << "Comparison for your chat (word count)" << endl;
     out << stats.comparisons().second << " of " << stats.comparisons().first << endl;
+    out << "%%%%" << endl;
     
     
     
